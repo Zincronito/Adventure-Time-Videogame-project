@@ -17,7 +17,7 @@ window.addEventListener('load', function(){
                         e.key === 'ArrowRight') 
                         && this.keys.indexOf(e.key) === -1){
                     this.keys.push(e.key);
-                }
+                }else if (e.key === 'Enter' && gameOver) restartGame();
             
             });
 
@@ -40,7 +40,7 @@ window.addEventListener('load', function(){
             this.gameHeight = gameHeight;
             this.Width = 231; 
             this.height = 200;
-            this.x = 0;
+            this.x = 100;
             this.y = this.gameHeight - this.height;
             this.image = document.getElementById('playerImage');
             this.frameX = 0;
@@ -51,9 +51,16 @@ window.addEventListener('load', function(){
             this.frameInterval = 1000/this.fps
             this.speed = 0;
             this.vy = 0;
-            this.weight = 0.5;
+            this.weight = 0.8;
 
             
+        }
+        restart(){
+            this.x = 100;
+            this.y = this.gameHeight - this.height;
+            this.maxFrame = 11;
+            this.frameY = 0; 
+
         }
         draw(context){
             context.strokeStyle = 'white';
@@ -146,6 +153,9 @@ window.addEventListener('load', function(){
             if (this.x <0 - this.width) this.x = 0;
 
         }
+        restart (){
+            this.x = 0;
+        }
 
     }
 
@@ -221,6 +231,7 @@ window.addEventListener('load', function(){
     }
 
     function displayStatusText(context){
+        context.textAlign = 'left';
         context.font = '40 px helvetica';
         context.fillStyle = 'black';
         context.fillText('score:' + score,20,50);
@@ -229,14 +240,21 @@ window.addEventListener('load', function(){
         if(gameOver){
             context.textAlign = 'center';
             context.fillStyle = 'black';
-            context.fillText('GAME OVER', canvas.width/2, 200);
+            context.fillText('GAME OVER, presiona enter', canvas.width/2, 200);
             context.fillStyle = 'white';
-            context.fillText('GAME OVER', canvas.width/2+2, 202);
+            context.fillText('GAME OVER, presiona enter', canvas.width/2+2, 202);
         }
 
     }
+
     function restartGame(){
-        
+        player.restart();
+        background.restart();
+        enemies = []; 
+        score = 0;
+        gameOver = false;
+        animate(0);
+
     }
 
     const input = new InputHandler();
