@@ -36,15 +36,15 @@ window.addEventListener('load', function(){
         constructor(gameWidth, gameHeight){
             this.gameWidth = gameWidth;
             this.gameHeight = gameHeight;
-            this.Width = 200; 
+            this.Width = 231; 
             this.height = 200;
             this.x = 0;
             this.y = this.gameHeight - this.height;
             this.image = document.getElementById('playerImage');
             this.frameX = 0;
-            this.maxFrame = 8;
+            this.maxFrame = 11;
             this.frameY = 0; 
-            this.fps = 13;
+            this.fps = 12;
             this.frameTimer = 0;
             this.frameInterval = 1000/this.fps
             this.speed = 0;
@@ -54,8 +54,8 @@ window.addEventListener('load', function(){
             
         }
         draw(context){
-            context.fillStyle = 'white';
-            context.fillRect(this.x, this.y, this.Width, this.height);
+            //context.fillStyle = 'white';
+            //context.fillRect(this.x, this.y, this.Width, this.height);
             context.drawImage(this.image,this.frameX*this.Width,this.frameY*this.height,this.Width,this.height, this.x,this.y, this.Width,this.height);
 
         }
@@ -130,17 +130,17 @@ window.addEventListener('load', function(){
         constructor(gameWidth,gameHeight){
             this.gameWidth = gameWidth;
             this.gameHeight = gameHeight;
-            this.width = 160;
-            this.height = 119;
+            this.width = 190;
+            this.height = 200;
             this.image = document.getElementById('enemyImage');
             this.x = this.gameWidth;
             this.y = this.gameHeight - this.height;
             this.frameX = 0;
-            this.maxFrame = 5;
-            this.fps = 13;
+            this.maxFrame = 7;
+            this.fps = 12;
             this.frameTimer = 0;
             this.frameInterval = 1000/this.fps
-            this.speed = 8;
+            this.speed = 7;
 
         }
         draw(context){
