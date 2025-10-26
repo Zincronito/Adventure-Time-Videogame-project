@@ -18,7 +18,6 @@ window.addEventListener('load', function(){
                         && this.keys.indexOf(e.key) === -1){
                     this.keys.push(e.key);
                 }else if (e.key === 'Enter' && gameOver) restartGame();
-            
             });
 
             window.addEventListener('keyup', e=>{
@@ -28,7 +27,6 @@ window.addEventListener('load', function(){
                         e.key === 'ArrowRight'){ 
                     this.keys.splice(this.keys.indexOf(e.key), 1);
                 }
-            
             });
         }
 
@@ -52,32 +50,28 @@ window.addEventListener('load', function(){
             this.speed = 0;
             this.vy = 0;
             this.weight = 0.8;
-
-            
         }
+
         restart(){
             this.x = 100;
             this.y = this.gameHeight - this.height;
             this.maxFrame = 11;
             this.frameY = 0; 
-
         }
+
         draw(context){
             context.strokeStyle = 'white';
             context.strokeRect(this.x, this.y, this.Width,this.height);
             context.beginPath();
             context.arc(this.x + this.Width/2, this.y+this.height/2, this.Width/2,0,Math.PI*2);
             context.stroke();
-
             context.strokeStyle = 'blue';
             context.beginPath();
             context.arc(this.x, this.y, this.Width/2,0,Math.PI*2);
             context.stroke();
-
-
             context.drawImage(this.image,this.frameX*this.Width,this.frameY*this.height,this.Width,this.height, this.x,this.y, this.Width,this.height);
-
         }
+
         update(input, deltaTime, enemies){
             //deteccion de colisiones
             enemies.forEach(enemy => {
@@ -103,10 +97,8 @@ window.addEventListener('load', function(){
             this.speed = 5;
            } else if (input.keys.indexOf('ArrowLeft') >-1 ){
             this.speed = -5;
-
            } else if (input.keys.indexOf('ArrowUp') >-1 && this.onGround() ){
             this.vy -= 32;
-
            } else{
             this.speed = 0;
            }
@@ -127,6 +119,7 @@ window.addEventListener('load', function(){
            }
            if(this.y > this.gameHeight - this.height) this.y = this.gameHeight - this.height 
         }
+
         onGround(){
             return this.y >= this.gameHeight - this.height;
         }
@@ -146,13 +139,13 @@ window.addEventListener('load', function(){
         draw(context){
             context.drawImage(this.image, this.x, this.y, this.width, this.height);
             context.drawImage(this.image, this.x + this.width - this.speed, this.y, this.width, this.height);
-
         }
+
         update(){
             this.x -= this.speed;
             if (this.x <0 - this.width) this.x = 0;
-
         }
+
         restart (){
             this.x = 0;
         }
@@ -175,22 +168,21 @@ window.addEventListener('load', function(){
             this.frameInterval = 1000/this.fps
             this.speed = 7;
             this.markedForDeletion = false;
-
         }
+
         draw(context){
             context.strokeStyle = 'white';
             context.strokeRect(this.x, this.y, this.width,this.height);
             context.beginPath();
             context.arc(this.x + this.width/2, this.y+this.height/2, this.width/2,0,Math.PI*2);
             context.stroke();
-
             context.strokeStyle = 'blue';
             context.beginPath();
             context.arc(this.x, this.y, this.width/2,0,Math.PI*2);
             context.stroke();
-
             context.drawImage(this.image,this.frameX*this.width,0,this.width,this.height, this.x, this.y, this.width, this.height);
         }
+
         update(deltaTime){
             if(this.frameTimer > this.frameInterval){
                 if (this.frameX >= this.maxFrame) this.frameX = 0;
@@ -204,20 +196,13 @@ window.addEventListener('load', function(){
               this.markedForDeletion = true;
               score ++;
               }
-
-
-
         }
-
-
     }
 
     function handleEnemies(deltaTime){
         if (enemyTimmer > enemyInterval + randomEnemyInterval){
             enemies.push(new Enemy(canvas.width, canvas.height));
-            console.log(enemies);
             randomEnemyInterval = Math.random()*1000 + 500;
-
             enemyTimmer = 0; 
         }else{
             enemyTimmer += deltaTime;
@@ -227,7 +212,6 @@ window.addEventListener('load', function(){
             enemy.update(deltaTime);
         });
         enemies = enemies.filter(enemy => !enemy.markedForDeletion);
-
     }
 
     function displayStatusText(context){
@@ -244,7 +228,6 @@ window.addEventListener('load', function(){
             context.fillStyle = 'white';
             context.fillText('GAME OVER, presiona enter', canvas.width/2+2, 202);
         }
-
     }
 
     function restartGame(){
@@ -254,13 +237,10 @@ window.addEventListener('load', function(){
         score = 0;
         gameOver = false;
         animate(0);
-
     }
 
     const input = new InputHandler();
-
     const player = new Player(canvas.width, canvas.height);
-
     const background = new Background(canvas.width, canvas.height);
 
     let lastTime = 0;
@@ -280,11 +260,8 @@ window.addEventListener('load', function(){
         player.update(input, deltaTime, enemies);
         handleEnemies(deltaTime);
         displayStatusText(ctx);
-     
-        
         if (!gameOver) requestAnimationFrame(animate);
-
     }
-    animate(0);
 
+    animate(0);
 });
