@@ -4,6 +4,7 @@ window.addEventListener('load', function(){
     canvas.width = 800;
     canvas.height = 720;
     let enemies = []; 
+    let score = 0;
 
     class InputHandler{
         constructor(){
@@ -90,9 +91,11 @@ window.addEventListener('load', function(){
            this.y += this.vy;
            if (!this.onGround()){
                this.vy += this.weight;
+               this.maxFrame = 4;
                this.frameY = 1;
            }else{
             this.vy = 0;
+            this.maxFrame = 11;
             this.frameY = 0;
            }
            if(this.y > this.gameHeight - this.height) this.y = this.gameHeight - this.height 
@@ -141,6 +144,7 @@ window.addEventListener('load', function(){
             this.frameTimer = 0;
             this.frameInterval = 1000/this.fps
             this.speed = 7;
+            this.markedForDeletion = false;
 
         }
         draw(context){
@@ -155,6 +159,13 @@ window.addEventListener('load', function(){
                 this.frameTimer += deltaTime;
             }
             this.x -= this.speed;
+            if(this.x < 0 - this.width) {
+              this.markedForDeletion = true;
+              score ++;
+              }
+
+
+
         }
 
 
@@ -163,6 +174,7 @@ window.addEventListener('load', function(){
     function handleEnemies(deltaTime){
         if (enemyTimmer > enemyInterval + randomEnemyInterval){
             enemies.push(new Enemy(canvas.width, canvas.height));
+            console.log(enemies);
             randomEnemyInterval = Math.random()*1000 + 500;
 
             enemyTimmer = 0; 
@@ -172,11 +184,15 @@ window.addEventListener('load', function(){
         enemies.forEach(enemy => {
             enemy.draw(ctx);
             enemy.update(deltaTime);
-        })
+        });
+        enemies = enemies.filter(enemy => !enemy.markedForDeletion);
 
     }
 
-    function displayStatusText(){
+    function displayStatusText(context){
+        context.fillStyle = 'black';
+        context.font = '40 px helvetica';
+        context.fillText('score:' + score,20,50);
 
     }
 
@@ -202,6 +218,7 @@ window.addEventListener('load', function(){
         player.draw(ctx);
         player.update(input, deltaTime);
         handleEnemies(deltaTime);
+        displayStatusText(ctx);
      
         
         requestAnimationFrame(animate);
