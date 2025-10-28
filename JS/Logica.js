@@ -123,7 +123,7 @@ window.addEventListener('load', function(){
             this.image = document.getElementById('backgroundImage');
             this.x = 0;
             this.y = 0;
-            this.width = 2400;
+            this.width = 10000;
             this.height = 720;
             this.speed = 7;
         }
@@ -237,7 +237,7 @@ window.addEventListener('load', function(){
         console.log(deltaTime);
         ctx.clearRect(0,0,canvas.width,canvas.height);
         background.draw(ctx);
-        //background.update();
+        background.update();
         player.draw(ctx);
         player.update(input, deltaTime, enemies);
         handleEnemies(deltaTime);
