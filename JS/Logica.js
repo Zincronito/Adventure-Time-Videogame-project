@@ -7,6 +7,7 @@ window.addEventListener('load', function(){
     let score = 0;
     let lives = 3;
     let gameOver = false;
+    let highScore = parseInt(localStorage.getItem('adventureTimeHighScore')) || 0;
     const backgroundMuisc = this.document.getElementById('backgroundMusic');
     let isMusicPlaying = false;
 
@@ -142,6 +143,10 @@ window.addEventListener('load', function(){
                     if (lives <= 0){
                         gameOver = true; // <-- FIN DEL JUEGO SI NO QUEDAN VIDAS
                     }
+                    if (score > highScore) {
+                            highScore = score;
+                            localStorage.setItem('adventureTimeHighScore', highScore.toString());
+                        }
                 }
             });
             //movimiento horizontal
@@ -278,6 +283,11 @@ window.addEventListener('load', function(){
         context.fillText('Vidas: ' + lives, 20, 100); // Posicionado debajo del score
         context.fillStyle = 'white';
         context.fillText('Vidas: ' + lives, 22, 102);
+
+        context.fillStyle = 'black';
+        context.fillText('High Score: ' + highScore, 20, 150); // Posicionado debajo de las vidas
+        context.fillStyle = 'white';
+        context.fillText('High Score: ' + highScore, 22, 152);
 
         if(gameOver){
             if(backgroundMuisc) backgroundMuisc.pause();
