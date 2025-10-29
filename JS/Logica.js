@@ -7,6 +7,8 @@ window.addEventListener('load', function(){
     let score = 0;
     let lives = 3;
     let gameOver = false;
+    const backgroundMuisc = this.document.getElementById('backgroundMusic');
+    let isMusicPlaying = false;
 
 
     class InputHandler{
@@ -19,6 +21,12 @@ window.addEventListener('load', function(){
                         e.key === 'ArrowRight') 
                         && this.keys.indexOf(e.key) === -1){
                     this.keys.push(e.key);
+
+                    if(!isMusicPlaying && backgroundMuisc){
+                        backgroundMuisc.play().catch(e=> console.log("inicie el juego"));
+                        isMusicPlaying = true;
+                    }
+
                 }else if (e.key === 'Enter' && gameOver) restartGame();
             });
 
@@ -272,6 +280,7 @@ window.addEventListener('load', function(){
         context.fillText('Vidas: ' + lives, 22, 102);
 
         if(gameOver){
+            if(backgroundMuisc) backgroundMuisc.pause();
             context.textAlign = 'center';
             context.fillStyle = 'black';
             context.fillText('GAME OVER, presiona enter', canvas.width/2, 200);
@@ -287,6 +296,7 @@ window.addEventListener('load', function(){
         score = 0;
         lives = 3;
         gameOver = false;
+        if (backgroundMuisc) backgroundMuisc.play();
         animate(0);
     }
 
