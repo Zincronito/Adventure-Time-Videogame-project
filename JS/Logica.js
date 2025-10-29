@@ -187,7 +187,7 @@ window.addEventListener('load', function(){
             this.y = 0;
             this.width = 10000;
             this.height = 720;
-            this.speed = 7;
+            this.speed = 2;
         }
         draw(context){
             context.drawImage(this.image, this.x, this.y, this.width, this.height);
