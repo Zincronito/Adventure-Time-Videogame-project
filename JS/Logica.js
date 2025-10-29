@@ -1,7 +1,7 @@
 window.addEventListener('load', function(){
     const canvas = document.getElementById('canvas1');
     const ctx = canvas.getContext('2d');
-    canvas.width = 800;
+    canvas.width = 1280;
     canvas.height = 720;
     let enemies = []; 
     let score = 0;
@@ -49,7 +49,7 @@ window.addEventListener('load', function(){
             this.frameInterval = 1000/this.fps
             this.speed = 0;
             this.vy = 0;
-            this.weight = 0.8;
+            this.weight = 1;
         }
 
         restart(){
@@ -66,13 +66,47 @@ window.addEventListener('load', function(){
         update(input, deltaTime, enemies){
             //deteccion de colisiones
             enemies.forEach(enemy => {
-                const dx = (enemy.x + enemy.width/2) - (this.x + this.Width/2);
-                const dy = (enemy.y + enemy.height/2) - (this.y + this.height/2);
-                const distance = Math.sqrt(dx * dx + dy * dy);
-                if(distance < enemy.width/2 +this.Width/2){
-                    gameOver=true;
+                // Definir hitboxes más pequeños para una colisión más precisa
+                // Estos valores (padding) se pueden ajustar
+                const playerPadding = {
+                    left: 70,
+                    right: 70,
+                    top: 20,
+                    bottom: 10
+                };
+                const enemyPadding = {
+                    left: 40,
+                    right: 40,
+                    top: 20,
+                    bottom: 10
+                };
+
+                const playerHitbox = {
+                    x: this.x + playerPadding.left,
+                    y: this.y + playerPadding.top,
+                    width: this.Width - playerPadding.left - playerPadding.right, // Ancho real: 91
+                    height: this.height - playerPadding.top - playerPadding.bottom // Alto real: 170
+                };
+
+                const enemyHitbox = {
+                    x: enemy.x + enemyPadding.left,
+                    y: enemy.y + enemyPadding.top,
+                    width: enemy.width - enemyPadding.left - enemyPadding.right, // Ancho real: 110
+                    height: enemy.height - enemyPadding.top - enemyPadding.bottom // Alto real: 170
+                };
+
+                // Detección de colisión AABB (Axis-Aligned Bounding Box)
+                if (
+                    playerHitbox.x < enemyHitbox.x + enemyHitbox.width &&
+                    playerHitbox.x + playerHitbox.width > enemyHitbox.x &&
+                    playerHitbox.y < enemyHitbox.y + enemyHitbox.height &&
+                    playerHitbox.y + playerHitbox.height > enemyHitbox.y
+                ) {
+                    // colisión detectada
+                    gameOver = true;
                 }
             });
+            
             //movimiento horizontal
             //sprite animation
             if(this.frameTimer > this.frameInterval){
@@ -101,7 +135,7 @@ window.addEventListener('load', function(){
            this.y += this.vy;
            if (!this.onGround()){
                this.vy += this.weight;
-               this.maxFrame = 4;
+               this.maxFrame = 3; //OJO QUE AQUI ANTES ERAN 4
                this.frameY = 1;
            }else{
             this.vy = 0;
@@ -110,7 +144,6 @@ window.addEventListener('load', function(){
            }
            if(this.y > this.gameHeight - this.height) this.y = this.gameHeight - this.height 
         }
-
         onGround(){
             return this.y >= this.gameHeight - this.height;
         }
@@ -198,7 +231,7 @@ window.addEventListener('load', function(){
 
     function displayStatusText(context){
         context.textAlign = 'left';
-        context.font = '40 px helvetica';
+        context.font = '40px helvetica';
         context.fillStyle = 'black';
         context.fillText('score:' + score,20,50);
         context.fillStyle = 'white';
