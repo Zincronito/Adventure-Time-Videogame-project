@@ -5,7 +5,9 @@ window.addEventListener('load', function(){
     canvas.height = 720;
     let enemies = []; 
     let score = 0;
+    let lives = 3;
     let gameOver = false;
+
 
     class InputHandler{
         constructor(){
@@ -50,6 +52,9 @@ window.addEventListener('load', function(){
             this.speed = 0;
             this.vy = 0;
             this.weight = 1;
+            this.invincible = false;
+            this.invincibleTimer = 0;
+            this.invincibilityDuration = 1500;
         }
 
         restart(){
@@ -60,10 +65,29 @@ window.addEventListener('load', function(){
         }
 
         draw(context){
-            context.drawImage(this.image,this.frameX*this.Width,this.frameY*this.height,this.Width,this.height, this.x,this.y, this.Width,this.height);
+            // Efecto de parpadeo al ser invencible
+            if (this.invincible) {
+                // Parpadea cada 100ms 
+                if (Math.floor(this.invincibleTimer / 100) % 2 === 0) {
+                    context.globalAlpha = 0.5; //aqui es semitransparente
+                } else {
+                    context.globalAlpha = 1; //aqui se vuelve opaco 
+                }
+            }
+
+            context.drawImage(this.image,this.frameX*this.Width,this.frameY*this.height,this.Width,this.height, this.x,this.y, this.Width,this.height); 
+            //restaura para que no afecte a otros dibujos
+            context.globalAlpha = 1; 
         }
 
         update(input, deltaTime, enemies){
+
+        if (this.invincibleTimer > 0) {
+                this.invincibleTimer -= deltaTime;
+            } else {
+                this.invincible = false;
+            }
+
             //deteccion de colisiones
             enemies.forEach(enemy => {
                 // Definir hitboxes más pequeños para una colisión más precisa
@@ -100,13 +124,18 @@ window.addEventListener('load', function(){
                     playerHitbox.x < enemyHitbox.x + enemyHitbox.width &&
                     playerHitbox.x + playerHitbox.width > enemyHitbox.x &&
                     playerHitbox.y < enemyHitbox.y + enemyHitbox.height &&
-                    playerHitbox.y + playerHitbox.height > enemyHitbox.y
+                    playerHitbox.y + playerHitbox.height > enemyHitbox.y &&
+                    !this.invincible
                 ) {
+                    lives--; // <-- RESTA UNA VIDA
+                    this.invincible = true;
+                    this.invincibleTimer = this.invincibilityDuration;
                     // colisión detectada
-                    gameOver = true;
+                    if (lives <= 0){
+                        gameOver = true; // <-- FIN DEL JUEGO SI NO QUEDAN VIDAS
+                    }
                 }
             });
-            
             //movimiento horizontal
             //sprite animation
             if(this.frameTimer > this.frameInterval){
@@ -236,6 +265,12 @@ window.addEventListener('load', function(){
         context.fillText('score:' + score,20,50);
         context.fillStyle = 'white';
         context.fillText('score:' + score,22,52);
+        //aqui se imprimen las vidas en pantalla
+        context.fillStyle = 'black';
+        context.fillText('Vidas: ' + lives, 20, 100); // Posicionado debajo del score
+        context.fillStyle = 'white';
+        context.fillText('Vidas: ' + lives, 22, 102);
+
         if(gameOver){
             context.textAlign = 'center';
             context.fillStyle = 'black';
@@ -250,6 +285,7 @@ window.addEventListener('load', function(){
         background.restart();
         enemies = []; 
         score = 0;
+        lives = 3;
         gameOver = false;
         animate(0);
     }
